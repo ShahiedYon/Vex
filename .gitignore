@@ -1,6 +1,21 @@
+# Node
 node_modules/
+
+# Env
 .env
+
+# Logs & runtime
 logs/
 workspace/
 *.log
+
+# Vex runtime data
+tasks/queue/completed/
+tasks/queue/processing/
+
+# Sensitive
 .openclaw/credentials/
+
+# OS junk
+desktop.ini
+.DS_Store
