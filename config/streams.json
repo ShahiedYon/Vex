@@ -1,0 +1,28 @@
+﻿{
+  "streams": [
+    {
+      "id": "debt_relief",
+      "name": "Debt Relief",
+      "priority_order": 1,
+      "goal": "Fast cash through finance assistance and debt lead generation for US customers",
+      "brand": "TBD",
+      "status": "active"
+    },
+    {
+      "id": "solar",
+      "name": "Solar",
+      "priority_order": 2,
+      "goal": "Affiliate, audience building, and solar lead generation",
+      "brand": "LumaSunUS",
+      "status": "active"
+    },
+    {
+      "id": "vextly",
+      "name": "Vextly",
+      "priority_order": 3,
+      "goal": "Automation consulting lead generation",
+      "brand": "Vextly",
+      "status": "active"
+    }
+  ]
+}

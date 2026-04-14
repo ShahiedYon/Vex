@@ -1,0 +1,23 @@
+﻿{
+    "api_version":  "1.2",
+    "current_time":  "2026-04-07 13:17:11",
+    "timezone":  "CEST",
+    "utc_offset":  "7200",
+    "runtime_seconds":  "0.0",
+    "result":  "success",
+    "data":  {
+                 "user_id":  "5455042",
+                 "user_name":  "yonshahiedd8eb",
+                 "granted_roles":  "affiliate,merchant",
+                 "granted_roles_msg":  "affiliate,vendor",
+                 "api_key_id":  "1632626",
+                 "api_key_site_url":  "",
+                 "api_key_permissions":  "readonly",
+                 "reseller_ids":  "2",
+                 "modified_at":  "2026-04-07 12:57:32",
+                 "contact":  {
+                                 "support_email":  "yon.shahied@outlook.com",
+                                 "skypename":  null
+                             }
+             }
+}

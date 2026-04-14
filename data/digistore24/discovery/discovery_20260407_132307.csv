@@ -1,0 +1,6 @@
+﻿"timestamp","function","ok","api_result","has_data","data_type","item_count","error","raw_error_body"
+"2026-04-07 13:23:08","getUserInfo","True","success","True","System.Management.Automation.PSCustomObject",,,
+"2026-04-07 13:23:09","listMarketplaceEntries","True","success","True","System.Management.Automation.PSCustomObject",,,
+"2026-04-07 13:23:09","listProductTypes","True","success","True","System.Management.Automation.PSCustomObject",,,
+"2026-04-07 13:23:09","listProducts","True","success","True","System.Management.Automation.PSCustomObject",,,
+"2026-04-07 13:23:10","listOrders","True","error","False",,,,

@@ -1,0 +1,6 @@
+TASK_NAME: Approved Python Run
+TASK_TYPE: python.run
+TARGET: C:\Users\yonsh\Vex\scripts\phase8_python_task.py
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase9-approved-python-result.txt
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase9-approved-python.log
+APPROVED: yes

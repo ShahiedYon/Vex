@@ -1,0 +1,5 @@
+TASK_NAME: Write Summary Report
+TASK_TYPE: file.write_report
+TARGET: Phase 8 routing test completed successfully.
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase8-report.txt
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase8-report.log

@@ -1,0 +1,57 @@
+﻿[
+    {
+        "timestamp":  "2026-04-07 13:23:08",
+        "function":  "getUserInfo",
+        "ok":  true,
+        "api_result":  "success",
+        "has_data":  true,
+        "data_type":  "System.Management.Automation.PSCustomObject",
+        "item_count":  null,
+        "error":  null,
+        "raw_error_body":  null
+    },
+    {
+        "timestamp":  "2026-04-07 13:23:09",
+        "function":  "listMarketplaceEntries",
+        "ok":  true,
+        "api_result":  "success",
+        "has_data":  true,
+        "data_type":  "System.Management.Automation.PSCustomObject",
+        "item_count":  null,
+        "error":  null,
+        "raw_error_body":  null
+    },
+    {
+        "timestamp":  "2026-04-07 13:23:09",
+        "function":  "listProductTypes",
+        "ok":  true,
+        "api_result":  "success",
+        "has_data":  true,
+        "data_type":  "System.Management.Automation.PSCustomObject",
+        "item_count":  null,
+        "error":  null,
+        "raw_error_body":  null
+    },
+    {
+        "timestamp":  "2026-04-07 13:23:09",
+        "function":  "listProducts",
+        "ok":  true,
+        "api_result":  "success",
+        "has_data":  true,
+        "data_type":  "System.Management.Automation.PSCustomObject",
+        "item_count":  null,
+        "error":  null,
+        "raw_error_body":  null
+    },
+    {
+        "timestamp":  "2026-04-07 13:23:10",
+        "function":  "listOrders",
+        "ok":  true,
+        "api_result":  "error",
+        "has_data":  false,
+        "data_type":  null,
+        "item_count":  null,
+        "error":  null,
+        "raw_error_body":  null
+    }
+]

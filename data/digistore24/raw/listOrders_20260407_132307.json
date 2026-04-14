@@ -1,0 +1,9 @@
+﻿{
+    "api_version":  "1.2",
+    "current_time":  "2026-04-07 13:23:10",
+    "timezone":  "CEST",
+    "utc_offset":  "7200",
+    "result":  "error",
+    "message":  "Invalid API function called: listOrders()",
+    "code":  9
+}

@@ -1,0 +1,7 @@
+TASK_NAME: Queue Auto Browser Check
+TASK_TYPE: browser.inspect
+TARGET: https://example.com
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase10-queue-browser-result.txt
+OUTPUT_SCREENSHOT: C:\Users\yonsh\Vex\workspace\phase10-queue-browser-shot.png
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase10-queue-browser.log
+APPROVED: no

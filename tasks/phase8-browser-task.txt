@@ -1,0 +1,6 @@
+TASK_NAME: Check Example Site
+TASK_TYPE: browser.inspect
+TARGET: https://example.com
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase8-browser-result.txt
+OUTPUT_SCREENSHOT: C:\Users\yonsh\Vex\workspace\phase8-browser-shot.png
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase8-browser.log

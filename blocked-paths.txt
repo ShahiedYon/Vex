@@ -1,0 +1,9 @@
+﻿C:\Windows
+C:\Program Files
+C:\Program Files (x86)
+C:\Users\yonsh\AppData
+C:\Users\yonsh\.ssh
+C:\Users\yonsh\.aws
+C:\Users\yonsh\.gitconfig
+C:\Users\yonsh\Desktop
+C:\Users\yonsh\Documents

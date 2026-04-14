@@ -1,0 +1,5 @@
+TASK_NAME: Run Node Validation
+TASK_TYPE: node.run
+TARGET: C:\Users\yonsh\Vex\scripts\phase8_node_task.js
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase8-node-result.txt
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase8-node.log

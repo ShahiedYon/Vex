@@ -1,0 +1,7 @@
+TASK_NAME: Auto Browser Check
+TASK_TYPE: browser.inspect
+TARGET: https://example.com
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase9-auto-browser-result.txt
+OUTPUT_SCREENSHOT: C:\Users\yonsh\Vex\workspace\phase9-auto-browser-shot.png
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase9-auto-browser.log
+APPROVED: no

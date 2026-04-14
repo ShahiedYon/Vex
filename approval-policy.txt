@@ -1,0 +1,7 @@
+AUTO_ALLOW:
+- browser.inspect
+- file.write_report
+
+REQUIRES_APPROVAL:
+- python.run
+- node.run

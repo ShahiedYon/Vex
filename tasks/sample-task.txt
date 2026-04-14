@@ -1,0 +1,4 @@
+﻿TASK_NAME: Create Vex phase 5 validation
+GOAL: Prove that Vex can intake a task, create a plan, execute it, verify it, and write a result.
+TYPE: validation
+OUTPUT_FILE: C:\Users\yonsh\Vex\workspace\phase5-result.txt

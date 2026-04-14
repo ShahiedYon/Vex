@@ -1,0 +1,33 @@
+﻿{
+  "weights": {
+    "email_found": 30,
+    "phone_found": 20,
+    "contact_page_found": 15,
+    "about_page_found": 5,
+    "linkedin_found": 10,
+    "facebook_found": 5,
+    "instagram_found": 5,
+    "x_found": 3,
+    "title_present": 3,
+    "h1_present": 3,
+    "preview_present": 2,
+    "https_site": 2,
+    "multiple_emails": 3,
+    "multiple_phones": 3,
+    "cross_page_contact_signals": 4,
+    "no_email_no_phone": -25,
+    "placeholder_site": -40,
+    "social_only_no_direct_contact": -10
+  },
+  "qualityBands": {
+    "high_min": 80,
+    "medium_min": 50
+  },
+  "placeholderPatterns": [
+    "domain for sale",
+    "coming soon",
+    "under construction",
+    "parked",
+    "buy this domain"
+  ]
+}

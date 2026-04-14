@@ -1,0 +1,6 @@
+TASK_NAME: Queue Blocked Python
+TASK_TYPE: python.run
+TARGET: C:\Users\yonsh\Vex\scripts\phase8_python_task.py
+OUTPUT_TEXT: C:\Users\yonsh\Vex\workspace\phase10-queue-blocked-python-result.txt
+OUTPUT_LOG: C:\Users\yonsh\Vex\logs\phase10-queue-blocked-python.log
+APPROVED: no

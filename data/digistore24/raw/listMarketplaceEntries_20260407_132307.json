@@ -1,0 +1,14 @@
+﻿{
+    "api_version":  "1.2",
+    "current_time":  "2026-04-07 13:23:09",
+    "timezone":  "CEST",
+    "utc_offset":  "7200",
+    "runtime_seconds":  "0.0",
+    "result":  "success",
+    "data":  {
+                 "entries":  [
+
+                             ],
+                 "count":  "0"
+             }
+}

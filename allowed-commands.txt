@@ -1,0 +1,22 @@
+﻿python
+py
+node
+npm
+git
+git status
+git pull
+git add
+git commit
+git clone
+dir
+ls
+cd
+type
+cat
+copy
+xcopy
+mkdir
+echo
+powershell -File
+ollama list
+ollama run
