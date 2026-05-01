@@ -13,7 +13,9 @@ if ([string]::IsNullOrWhiteSpace($Root)) {
 
 $enqueueScript = Join-Path $VexScripts "vex_money_enqueue.ps1"
 $queueRunner = Join-Path $VexScripts "phase10_queue_runner.ps1"
-$summaryFile = Join-Path $VexWorkspace "vex_money_today.txt"
+$summaryScript = Join-Path $VexScripts "vex_today_summary.ps1"
+$moneySummaryFile = Join-Path $VexWorkspace "vex_money_today.txt"
+$actionSummaryFile = Join-Path $VexWorkspace "vex_today_action.txt"
 $logsDir = Join-Path $VexWorkspace "logs"
 $todayLog = Join-Path $logsDir ("vex_today_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
 
@@ -37,24 +39,39 @@ if (-not (Test-Path $queueRunner)) {
     throw "Missing queue runner: " + $queueRunner
 }
 
+if (-not (Test-Path $summaryScript)) {
+    throw "Missing action summary script: " + $summaryScript
+}
+
 Write-TodayLog "Queueing money workflow task"
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $enqueueScript -Root $Root
 
 Write-TodayLog "Running queue"
 & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $queueRunner
 
-if (-not (Test-Path $summaryFile)) {
-    throw "Summary file was not created: " + $summaryFile
+if (-not (Test-Path $moneySummaryFile)) {
+    throw "Money summary file was not created: " + $moneySummaryFile
 }
 
-Write-TodayLog ("Summary ready: " + $summaryFile)
+Write-TodayLog "Creating action summary"
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $summaryScript -Root $Root
+
+if (-not (Test-Path $actionSummaryFile)) {
+    throw "Action summary file was not created: " + $actionSummaryFile
+}
+
+Write-TodayLog ("Money summary ready: " + $moneySummaryFile)
+Write-TodayLog ("Action summary ready: " + $actionSummaryFile)
 Write-TodayLog "Vex Today command complete"
 
 Write-Host ""
 Write-Host "Vex Today complete." -ForegroundColor Green
-Write-Host "Summary:"
-Write-Host $summaryFile
+Write-Host "Action summary:"
+Write-Host $actionSummaryFile
+Write-Host ""
+Write-Host "Money workflow summary:"
+Write-Host $moneySummaryFile
 
 if (-not $NoOpen) {
-    notepad $summaryFile
+    notepad $actionSummaryFile
 }
