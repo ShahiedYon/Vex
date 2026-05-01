@@ -4,6 +4,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. "$PSScriptRoot\vex_env.ps1"
+
 function Write-Log {
     param([string]$Path, [string]$Message)
     $ts = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -37,7 +39,7 @@ if (-not (Test-Path $TaskFile)) {
     exit 1
 }
 
-$routerLog = "C:\Users\yonsh\Vex\logs\phase9-router.log"
+$routerLog = Join-Path $VexLogs "phase9-router.log"
 $task = Parse-TaskFile -Path $TaskFile
 
 $taskName = $task["TASK_NAME"]
@@ -79,7 +81,7 @@ if ($requiresApproval -and $approved -ne "yes") {
 switch ($taskType) {
     "browser.inspect" {
         Write-Log -Path $routerLog -Message "ROUTE SELECTED: browser.inspect"
-        node C:\Users\yonsh\Vex\browser\phase8_browser_task.js $TaskFile
+        & node (Join-Path $VexBrowser "phase8_browser_task.js") $TaskFile
     }
     "python.run" {
         Write-Log -Path $routerLog -Message "ROUTE SELECTED: python.run"
@@ -110,6 +112,30 @@ switch ($taskType) {
         $lines += "Message: $target"
         Set-Content -Path $outputText -Value $lines -Encoding UTF8
         Add-Content -Path $outputLog -Value "[$ts] Report written successfully" -Encoding UTF8
+    }
+    "vex.money_button" {
+        Write-Log -Path $routerLog -Message "ROUTE SELECTED: vex.money_button"
+
+        $buttonScript = Join-Path $VexScripts "vex_money_button.ps1"
+        if (-not (Test-Path $buttonScript)) {
+            throw "Missing Vex money button script: " + $buttonScript
+        }
+
+        & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $buttonScript -Root $VexRoot
+
+        $ts = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+        $summaryFile = Join-Path $VexWorkspace "vex_money_today.txt"
+
+        $lines = @()
+        $lines += "Vex Money Button Queue Result"
+        $lines += "Timestamp: $ts"
+        $lines += "Task Name: $taskName"
+        $lines += "Status: SUCCESS"
+        $lines += "Message: Vex money workflow completed from queue."
+        $lines += "Summary: $summaryFile"
+
+        Set-Content -Path $outputText -Value $lines -Encoding UTF8
+        Add-Content -Path $outputLog -Value "[$ts] Vex money button executed from queue" -Encoding UTF8
     }
     default {
         Write-Log -Path $routerLog -Message "UNKNOWN TASK TYPE: $taskType"

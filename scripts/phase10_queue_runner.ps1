@@ -1,10 +1,17 @@
 $ErrorActionPreference = "Stop"
 
-$pending = "C:\Users\yonsh\Vex\tasks\queue\pending"
-$completed = "C:\Users\yonsh\Vex\tasks\queue\completed"
-$failed = "C:\Users\yonsh\Vex\tasks\queue\failed"
-$router = "C:\Users\yonsh\Vex\scripts\phase9_router.ps1"
-$queueLog = "C:\Users\yonsh\Vex\logs\phase10-queue.log"
+. "$PSScriptRoot\vex_env.ps1"
+
+$pending = Join-Path $VexTasks "queue\pending"
+$completed = Join-Path $VexTasks "queue\completed"
+$failed = Join-Path $VexTasks "queue\failed"
+$router = Join-Path $VexScripts "phase9_router.ps1"
+$queueLog = Join-Path $VexLogs "phase10-queue.log"
+
+New-Item -ItemType Directory -Force -Path $pending | Out-Null
+New-Item -ItemType Directory -Force -Path $completed | Out-Null
+New-Item -ItemType Directory -Force -Path $failed | Out-Null
+New-Item -ItemType Directory -Force -Path $VexLogs | Out-Null
 
 function Write-Log {
     param([string]$Message)
@@ -39,7 +46,7 @@ foreach ($task in $taskFiles) {
     Write-Log "Processing task: $($task.Name)"
 
     try {
-        powershell -ExecutionPolicy Bypass -File $router -TaskFile $task.FullName
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File $router -TaskFile $task.FullName
 
         $outputText = Get-OutputTextPath -TaskFile $task.FullName
         $status = "UNKNOWN"
