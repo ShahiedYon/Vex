@@ -1,8 +1,9 @@
-﻿param(
+param(
     [string]$url = "https://example.com"
 )
 
-$base = "C:\Users\yonsh\Vex"
+. "$PSScriptRoot\vex_env.ps1"
+$base = $VexRoot
 $browser = Join-Path $base "browser"
 $workspace = Join-Path $base "workspace"
 $log = Join-Path $base "logs\phase14.log"

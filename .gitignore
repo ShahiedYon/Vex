@@ -19,3 +19,4 @@ tasks/queue/processing/
 # OS junk
 desktop.ini
 .DS_Store
+_backups/
