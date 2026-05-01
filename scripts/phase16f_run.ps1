@@ -1,13 +1,22 @@
-﻿param(
-    [string]$Root = "C:\Users\yonsh\Vex"
+param(
+    [string]$Root = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+. "$PSScriptRoot\vex_env.ps1"
+
+if ([string]::IsNullOrWhiteSpace($Root)) {
+    $Root = $VexRoot
+}
 
 $workspaceDir = Join-Path $Root "workspace"
 $campaignsDir = Join-Path $workspaceDir "campaigns"
 $logsDir = Join-Path $workspaceDir "logs"
 $logFile = Join-Path $logsDir ("phase16f_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
+
+New-Item -ItemType Directory -Force -Path $campaignsDir | Out-Null
+New-Item -ItemType Directory -Force -Path $logsDir | Out-Null
 
 function Write-Log {
     param([string]$Message)
