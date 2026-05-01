@@ -1,8 +1,14 @@
-﻿param(
-    [string]$Root = "C:\Users\yonsh\Vex"
+param(
+    [string]$Root = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+. "$PSScriptRoot\vex_env.ps1"
+
+if ([string]::IsNullOrWhiteSpace($Root)) {
+    $Root = $VexRoot
+}
 
 $configDir = Join-Path $Root "config"
 $workspaceDir = Join-Path $Root "workspace"
