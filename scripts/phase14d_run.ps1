@@ -1,16 +1,28 @@
-﻿param(
-    [string]$InputDir = "C:\Users\yonsh\Vex\workspace\reports",
-    [string]$OutputDir = "C:\Users\yonsh\Vex\workspace\scored",
-    [string]$RulesFile = "C:\Users\yonsh\Vex\config\lead_scoring_rules.json"
+param(
+    [string]$InputDir = "",
+    [string]$OutputDir = "",
+    [string]$RulesFile = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+. "$PSScriptRoot\vex_env.ps1"
+
+if ([string]::IsNullOrWhiteSpace($InputDir)) {
+    $InputDir = Join-Path $VexWorkspace "reports"
+}
+if ([string]::IsNullOrWhiteSpace($OutputDir)) {
+    $OutputDir = Join-Path $VexWorkspace "scored"
+}
+if ([string]::IsNullOrWhiteSpace($RulesFile)) {
+    $RulesFile = Join-Path $VexConfig "lead_scoring_rules.json"
+}
 
 $null = New-Item -ItemType Directory -Force -Path $OutputDir
 
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $summaryCsv = Join-Path $OutputDir ("lead_score_summary_" + $timestamp + ".csv")
-$logFile = "C:\Users\yonsh\Vex\workspace\logs\phase14d_" + $timestamp + ".log"
+$logFile = Join-Path $VexWorkspaceLogs ("phase14d_" + $timestamp + ".log")
 
 function Write-Log {
     param([string]$Message)
@@ -37,7 +49,7 @@ for ($i = 0; $i -lt $files.Count; $i++) {
 
     try {
         Write-Log ("Scoring " + $file.FullName)
-        & "C:\Users\yonsh\Vex\scripts\score_lead.ps1" -InputFile $file.FullName -RulesFile $RulesFile -OutputFile $outFile
+        & (Join-Path $VexScripts "score_lead.ps1") -InputFile $file.FullName -RulesFile $RulesFile -OutputFile $outFile
 
         $scored = Get-Content -Raw -Path $outFile | ConvertFrom-Json
         $rows.Add([pscustomobject]@{
