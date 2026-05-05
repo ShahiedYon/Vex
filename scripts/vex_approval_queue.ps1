@@ -99,12 +99,13 @@ $destDir = if ($actionLower -eq "approve") { $approved } else { $rejected }
 $dest = Join-Path $destDir $file.Name
 Move-Item -Path $file.FullName -Destination $dest -Force
 
-Add-Content -Path $logFile -Value ("[" + (Get-Date -Format "yyyyMMdd_HHmmss") + "] " + $actionLower + "d " + $file.Name) -Encoding UTF8
+$pastTense = if ($actionLower -eq "approve") { "approved" } else { "rejected" }
+Add-Content -Path $logFile -Value ("[" + (Get-Date -Format "yyyyMMdd_HHmmss") + "] " + $pastTense + " " + $file.Name) -Encoding UTF8
 
 $content = Get-Content -Path $dest -Raw
 $preview = ($content -replace "(?s).*POST_TEXT:\s*", "").Trim()
 $out = @()
-$out += "Draft " + $actionLower + "d."
+$out += "Draft " + $pastTense + "."
 $out += "ID: " + $file.BaseName
 $out += "Saved to: " + $dest
 $out += ""
