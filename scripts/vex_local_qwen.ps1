@@ -2,7 +2,8 @@ param(
     [string]$Root = "",
     [string]$Prompt = "Who are you?",
     [string]$Model = "vex-qwen3:4b",
-    [switch]$Save
+    [switch]$Save,
+    [switch]$Quiet
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,15 +30,18 @@ Ensure-Directory $workspace
 Ensure-Directory $brainDir
 Ensure-Directory $logs
 
-$cmd = "ollama run $Model --hidethinking `"$Prompt`""
-
-Write-Host "Running local Vex Qwen..." -ForegroundColor Cyan
-Write-Host "Model: $Model" -ForegroundColor DarkGray
-Write-Host "Prompt: $Prompt" -ForegroundColor DarkGray
-Write-Host ""
+if (-not $Quiet) {
+    Write-Host "Running local Vex Qwen..." -ForegroundColor Cyan
+    Write-Host "Model: $Model" -ForegroundColor DarkGray
+    Write-Host "Prompt length: $($Prompt.Length) chars" -ForegroundColor DarkGray
+    Write-Host ""
+}
 
 try {
-    $reply = powershell -NoProfile -ExecutionPolicy Bypass -Command $cmd 2>&1 | Out-String
+    # IMPORTANT: call ollama directly with argument binding.
+    # Do not wrap the prompt inside a nested PowerShell -Command string because long prompts
+    # can contain quotes/backticks/JSON and break parsing.
+    $reply = & ollama run $Model --hidethinking $Prompt 2>&1 | Out-String
     $reply = $reply.Trim()
 }
 catch {
@@ -46,12 +50,14 @@ catch {
 
 Write-Host $reply
 Set-Content -Path $lastFile -Value $reply -Encoding UTF8
-Add-Content -Path $logFile -Value ("[" + $stamp + "] Prompt: " + $Prompt) -Encoding UTF8
-Add-Content -Path $logFile -Value ("[" + $stamp + "] Reply: " + $reply) -Encoding UTF8
+Add-Content -Path $logFile -Value ("[" + $stamp + "] Prompt length: " + $Prompt.Length) -Encoding UTF8
+Add-Content -Path $logFile -Value ("[" + $stamp + "] Reply length: " + $reply.Length) -Encoding UTF8
 
 if ($Save) {
     Set-Content -Path $outFile -Value $reply -Encoding UTF8
-    Write-Host ""
-    Write-Host "Saved reply:" -ForegroundColor Green
-    Write-Host $outFile
+    if (-not $Quiet) {
+        Write-Host ""
+        Write-Host "Saved reply:" -ForegroundColor Green
+        Write-Host $outFile
+    }
 }
