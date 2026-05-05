@@ -26,6 +26,7 @@ if ([string]::IsNullOrWhiteSpace($Root)) {
 $Root = [System.IO.Path]::GetFullPath($Root)
 $workspace = Join-Path $Root "workspace"
 $social = Join-Path $workspace "social"
+$brainDir = Join-Path $workspace "brain"
 $approvals = Join-Path $workspace "approvals"
 $pending = Join-Path $approvals "pending"
 $approved = Join-Path $approvals "approved"
@@ -36,6 +37,7 @@ $money = Join-Path $workspace "money"
 
 Ensure-Directory $workspace
 Ensure-Directory $social
+Ensure-Directory $brainDir
 Ensure-Directory $approvals
 Ensure-Directory $pending
 Ensure-Directory $approved
@@ -46,6 +48,7 @@ $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $today = Get-Date -Format "yyyy-MM-dd"
 $calendar = Join-Path $social "social_calendar.csv"
 $replyFile = Join-Path $workspace "vex_last_reply.txt"
+$promptFile = Join-Path $brainDir ("social_prompt_" + $stamp + ".txt")
 $logFile = Join-Path $logs "vex_social_draft_queue.log"
 $localQwen = Join-Path $Root "scripts\vex_local_qwen.ps1"
 
@@ -58,7 +61,7 @@ $rules = Read-FileSafe (Join-Path $memory "MONEY_RULES.md")
 $latestIdea = Read-FileSafe (Join-Path $money "daily_money_idea_latest.txt")
 $siteStatus = Read-FileSafe (Join-Path $workspace "moneycrunch_site_action.txt")
 
-$streamContext = ""
+$streamContext = "Create practical, compliant social content for the stream named $Stream."
 if ($Stream.ToLowerInvariant() -eq "moneycrunch") {
     $streamContext = "MoneyCrunch is a U.S.-focused debt relief lead-generation site for people exploring options around unsecured debt. Avoid guarantees, fear tactics, legal/financial advice, or unrealistic claims. CTA can be: check options, learn more, or explore options."
 }
@@ -68,11 +71,8 @@ elseif ($Stream.ToLowerInvariant() -eq "lumasun" -or $Stream.ToLowerInvariant() 
 elseif ($Stream.ToLowerInvariant() -eq "vextly") {
     $streamContext = "Vextly is an automation consultancy stream. Focus on AI automation, Excel/Power Automate, small business operations, and practical workflow improvements."
 }
-else {
-    $streamContext = "Create practical, compliant social content for the stream named $Stream."
-}
 
-$platformRules = ""
+$platformRules = "Write social post drafts for platform: $Platform."
 if ($Platform.ToLowerInvariant() -eq "x") {
     $platformRules = "Write short X/Twitter posts. No hashtags unless useful. Make them conversational. Under 260 characters when possible."
 }
@@ -81,9 +81,6 @@ elseif ($Platform.ToLowerInvariant() -eq "facebook" -or $Platform.ToLowerInvaria
 }
 elseif ($Platform.ToLowerInvariant() -eq "instagram" -or $Platform.ToLowerInvariant() -eq "insta") {
     $platformRules = "Write Instagram caption drafts. Include a short hook, simple body, and soft CTA. Avoid spammy hashtag blocks."
-}
-else {
-    $platformRules = "Write social post drafts for platform: $Platform."
 }
 
 $prompt = @"
@@ -121,11 +118,11 @@ DRAFT 2:
 DRAFT 3:
 <post text>
 "@
+Set-Content -Path $promptFile -Value $prompt -Encoding UTF8
 
 $raw = ""
 if (Test-Path $localQwen) {
-    $escaped = $prompt.Replace('"','`"')
-    $raw = powershell -ExecutionPolicy Bypass -File $localQwen -Root $Root -Prompt $escaped 2>&1 | Out-String
+    $raw = powershell -ExecutionPolicy Bypass -File $localQwen -Root $Root -PromptFile $promptFile -Quiet 2>&1 | Out-String
 }
 else {
     $raw = "DRAFT 1:`r`nManual fallback draft for $Stream on $Platform.`r`n`r`nDRAFT 2:`r`nManual fallback draft 2.`r`n`r`nDRAFT 3:`r`nManual fallback draft 3."
