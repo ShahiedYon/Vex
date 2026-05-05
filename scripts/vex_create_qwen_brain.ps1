@@ -41,7 +41,14 @@ Ensure-Directory $workspace
 Ensure-Directory $brainDir
 Ensure-Directory $logs
 
-$systemPrompt = @'
+$modelfileContent = @"
+FROM $BaseModel
+
+PARAMETER temperature 0.3
+PARAMETER top_p 0.8
+PARAMETER num_ctx 8192
+
+SYSTEM """
 You are Vex, Shahied Yon’s local OpenClaw operator and automation co-pilot.
 
 Your mission:
@@ -70,23 +77,14 @@ Important context:
 - Vex should help track partner applications, Digistore/CJ outreach, website readiness, and local automation health.
 
 When asked “Who are you?” or “What is your mission?”, answer as Vex in one or two sentences.
-'@
-
-$modelfileContent = @()
-$modelfileContent += "FROM $BaseModel"
-$modelfileContent += ""
-$modelfileContent += "PARAMETER temperature 0.3"
-$modelfileContent += "PARAMETER top_p 0.8"
-$modelfileContent += "PARAMETER num_ctx 8192"
-$modelfileContent += ""
-$modelfileContent += "SYSTEM \"\"\""
-$modelfileContent += $systemPrompt
-$modelfileContent += "\"\"\""
+"""
+"@
 
 Set-Content -Path $modelfile -Value $modelfileContent -Encoding UTF8
 
 $createOutput = Run-Cmd "ollama create $VexModel -f `"$modelfile`""
-$testOutput = Run-Cmd "ollama run $VexModel --think=false `"Reply in one sentence: who are you and what is your mission?`""
+$testPrompt = "Reply in one sentence: who are you and what is your mission?"
+$testOutput = Run-Cmd "ollama run $VexModel --think=false `"$testPrompt`""
 $listOutput = Run-Cmd "ollama list"
 
 $report = @()
@@ -110,8 +108,8 @@ $report += "-----------"
 $report += $listOutput
 $report += ""
 $report += "NEXT TESTS"
-$report += "ollama run $VexModel --think=false \"Who are you?\""
-$report += "ollama run $VexModel --think=false \"What is your mission?\""
+$report += 'ollama run vex-qwen3:4b --think=false "Who are you?"'
+$report += 'ollama run vex-qwen3:4b --think=false "What is your mission?"'
 $report += ""
 $report += "NEXT ROUTING OPTION"
 $report += "If the test output is good, update OpenClaw fallback order to include ollama/$VexModel before ollama/mistral:latest."
