@@ -9,6 +9,9 @@ logs/
 workspace/
 *.log
 
+# Local backups
+_backups/
+
 # Vex runtime data
 tasks/queue/completed/
 tasks/queue/processing/
