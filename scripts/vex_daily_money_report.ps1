@@ -30,6 +30,7 @@ $Root = [System.IO.Path]::GetFullPath($Root)
 $workspace = Join-Path $Root "workspace"
 $money = Join-Path $workspace "money"
 $social = Join-Path $workspace "social"
+$brainDir = Join-Path $workspace "brain"
 $partners = Join-Path $workspace "partners"
 $digistore = Join-Path $workspace "digistore"
 $approvals = Join-Path $workspace "approvals"
@@ -41,6 +42,7 @@ $logs = Join-Path $Root "logs"
 Ensure-Directory $workspace
 Ensure-Directory $money
 Ensure-Directory $social
+Ensure-Directory $brainDir
 Ensure-Directory $partners
 Ensure-Directory $digistore
 Ensure-Directory $approvals
@@ -53,6 +55,7 @@ $today = Get-Date -Format "yyyy-MM-dd"
 $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $reportFile = Join-Path $money ("daily_money_report_" + $today + ".txt")
 $latestReport = Join-Path $money "daily_money_report_latest.txt"
+$promptFile = Join-Path $brainDir ("daily_report_prompt_" + $stamp + ".txt")
 $replyFile = Join-Path $workspace "vex_last_reply.txt"
 $logFile = Join-Path $logs "vex_daily_money_report.log"
 
@@ -115,11 +118,12 @@ One new idea to consider tomorrow:
 Decision needed from Shahied:
 "@
 
+Set-Content -Path $promptFile -Value $prompt -Encoding UTF8
+
 $report = ""
 if (Test-Path $localQwen) {
     try {
-        $escaped = $prompt.Replace('"','`"')
-        $report = powershell -ExecutionPolicy Bypass -File $localQwen -Root $Root -Prompt $escaped 2>&1 | Out-String
+        $report = powershell -ExecutionPolicy Bypass -File $localQwen -Root $Root -PromptFile $promptFile -Quiet 2>&1 | Out-String
         $report = $report.Trim()
     }
     catch {
@@ -130,7 +134,6 @@ else {
     $report = "VEX DAILY MONEY REPORT`r`n======================`r`nStatus: Local Qwen wrapper missing.`r`nToday's best next action: Fix local Qwen or use cloud router."
 }
 
-# Remove wrapper noise if the model produced the desired header.
 $lines = $report -split "`r?`n"
 $clean = @()
 $started = $false
