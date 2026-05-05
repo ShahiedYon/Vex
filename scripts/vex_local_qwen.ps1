@@ -3,6 +3,7 @@ param(
     [string]$Prompt = "Who are you?",
     [string]$PromptFile = "",
     [string]$Model = "vex-qwen3:4b",
+    [int]$TimeoutSec = 120,
     [switch]$Save,
     [switch]$Quiet
 )
@@ -41,20 +42,42 @@ if (-not $Quiet) {
     Write-Host "Model: $Model" -ForegroundColor DarkGray
     if (-not [string]::IsNullOrWhiteSpace($PromptFile)) { Write-Host "Prompt file: $PromptFile" -ForegroundColor DarkGray }
     Write-Host "Prompt length: $($Prompt.Length) chars" -ForegroundColor DarkGray
+    Write-Host "Timeout: $TimeoutSec sec" -ForegroundColor DarkGray
     Write-Host ""
 }
 
+$reply = ""
+$job = $null
 try {
-    $reply = & ollama run $Model --hidethinking $Prompt 2>&1 | Out-String
-    $reply = $reply.Trim()
+    $job = Start-Job -ScriptBlock {
+        param($JobModel, $JobPrompt)
+        & ollama run $JobModel --hidethinking $JobPrompt 2>&1 | Out-String
+    } -ArgumentList $Model, $Prompt
+
+    $completed = Wait-Job -Job $job -Timeout $TimeoutSec
+    if ($null -eq $completed) {
+        Stop-Job -Job $job -Force | Out-Null
+        $reply = "LOCAL_QWEN_TIMEOUT: $Model did not respond within $TimeoutSec seconds. Vex should use cloud routing or a shorter prompt for this task."
+    }
+    else {
+        $reply = Receive-Job -Job $job | Out-String
+        $reply = $reply.Trim()
+        if ([string]::IsNullOrWhiteSpace($reply)) {
+            $reply = "LOCAL_QWEN_EMPTY_REPLY: $Model returned no visible output."
+        }
+    }
 }
 catch {
     $reply = "ERROR: " + $_.Exception.Message
+}
+finally {
+    if ($null -ne $job) { Remove-Job -Job $job -Force -ErrorAction SilentlyContinue | Out-Null }
 }
 
 Write-Host $reply
 Set-Content -Path $lastFile -Value $reply -Encoding UTF8
 Add-Content -Path $logFile -Value ("[" + $stamp + "] Model: " + $Model) -Encoding UTF8
+Add-Content -Path $logFile -Value ("[" + $stamp + "] TimeoutSec: " + $TimeoutSec) -Encoding UTF8
 Add-Content -Path $logFile -Value ("[" + $stamp + "] Prompt length: " + $Prompt.Length) -Encoding UTF8
 Add-Content -Path $logFile -Value ("[" + $stamp + "] Reply length: " + $reply.Length) -Encoding UTF8
 
