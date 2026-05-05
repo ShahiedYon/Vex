@@ -24,6 +24,7 @@ if ([string]::IsNullOrWhiteSpace($Root)) {
 $Root = [System.IO.Path]::GetFullPath($Root)
 $workspace = Join-Path $Root "workspace"
 $money = Join-Path $workspace "money"
+$brainDir = Join-Path $workspace "brain"
 $logs = Join-Path $Root "logs"
 $memory = Join-Path $Root "memory"
 $config = Join-Path $Root "config"
@@ -32,6 +33,7 @@ $digistore = Join-Path $workspace "digistore"
 
 Ensure-Directory $workspace
 Ensure-Directory $money
+Ensure-Directory $brainDir
 Ensure-Directory $logs
 Ensure-Directory $partners
 
@@ -40,6 +42,7 @@ $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $ideaFile = Join-Path $money ("daily_money_idea_" + $today + ".txt")
 $lastIdeaFile = Join-Path $money "daily_money_idea_latest.txt"
 $trackerFile = Join-Path $money "opportunity_radar.csv"
+$promptFile = Join-Path $brainDir ("money_brain_prompt_" + $stamp + ".txt")
 $logFile = Join-Path $logs "vex_money_brain.log"
 
 if (-not (Test-Path $trackerFile)) {
@@ -106,11 +109,12 @@ Score out of 100:
 Decision needed from Shahied:
 "@
 
+Set-Content -Path $promptFile -Value $prompt -Encoding UTF8
+
 $reply = ""
 if (Test-Path $localQwen) {
     try {
-        $escapedPrompt = $prompt.Replace('"','`"')
-        $reply = powershell -ExecutionPolicy Bypass -File $localQwen -Root $Root -Prompt $escapedPrompt 2>&1 | Out-String
+        $reply = powershell -ExecutionPolicy Bypass -File $localQwen -Root $Root -PromptFile $promptFile -Quiet 2>&1 | Out-String
         $reply = $reply.Trim()
     }
     catch {
@@ -121,7 +125,6 @@ else {
     $reply = "Local Qwen wrapper not found. Create it first with vex_local_qwen.ps1."
 }
 
-# Clean wrapper noise if present.
 $lines = $reply -split "`r?`n"
 $clean = @()
 $started = $false
@@ -134,7 +137,6 @@ if ($clean.Count -gt 0) { $reply = ($clean -join "`r`n") }
 Set-Content -Path $ideaFile -Value $reply -Encoding UTF8
 Set-Content -Path $lastIdeaFile -Value $reply -Encoding UTF8
 
-# Try to extract simple fields for tracker.
 $ideaName = "Daily idea " + $today
 $stream = "new_money_stream"
 $score = ""
