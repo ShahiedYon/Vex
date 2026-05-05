@@ -1,6 +1,7 @@
 param(
     [string]$Root = "",
     [string]$Prompt = "Who are you?",
+    [string]$PromptFile = "",
     [string]$Model = "vex-qwen3:4b",
     [switch]$Save,
     [switch]$Quiet
@@ -30,17 +31,20 @@ Ensure-Directory $workspace
 Ensure-Directory $brainDir
 Ensure-Directory $logs
 
+if (-not [string]::IsNullOrWhiteSpace($PromptFile)) {
+    if (-not (Test-Path $PromptFile)) { throw "Prompt file not found: $PromptFile" }
+    $Prompt = Get-Content -Path $PromptFile -Raw
+}
+
 if (-not $Quiet) {
     Write-Host "Running local Vex Qwen..." -ForegroundColor Cyan
     Write-Host "Model: $Model" -ForegroundColor DarkGray
+    if (-not [string]::IsNullOrWhiteSpace($PromptFile)) { Write-Host "Prompt file: $PromptFile" -ForegroundColor DarkGray }
     Write-Host "Prompt length: $($Prompt.Length) chars" -ForegroundColor DarkGray
     Write-Host ""
 }
 
 try {
-    # IMPORTANT: call ollama directly with argument binding.
-    # Do not wrap the prompt inside a nested PowerShell -Command string because long prompts
-    # can contain quotes/backticks/JSON and break parsing.
     $reply = & ollama run $Model --hidethinking $Prompt 2>&1 | Out-String
     $reply = $reply.Trim()
 }
@@ -50,6 +54,7 @@ catch {
 
 Write-Host $reply
 Set-Content -Path $lastFile -Value $reply -Encoding UTF8
+Add-Content -Path $logFile -Value ("[" + $stamp + "] Model: " + $Model) -Encoding UTF8
 Add-Content -Path $logFile -Value ("[" + $stamp + "] Prompt length: " + $Prompt.Length) -Encoding UTF8
 Add-Content -Path $logFile -Value ("[" + $stamp + "] Reply length: " + $reply.Length) -Encoding UTF8
 
